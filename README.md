@@ -105,7 +105,7 @@ Ao solicitar o pagamento você recebe um Array com os seguintes dados:
 Os erros irão retornar as seguintes mensagens:
 - O Token informado é inválido
 - Algumas propriedades não passaram no teste de validação.
-    * > Entenda esse erro
+    * > [Entenda esse erro](https://github.com/misterioso013/picpay-php#erro-422---valida%C3%A7%C3%A3o-de-dados)
 - Problema geral, verifique se a transação foi criada ou cancele a mesma.
 
 Esperar por erros ajuda a não depender apenas do cliente definir digitar os dados corretamente ou da API que você está usando. Aconteça o que acontecer mas seu sistema nunca cairá por causa de algum erro.
@@ -230,3 +230,5 @@ Possíveis status:
 |  completed  |  pago e saldo disponível  |
 |  refunded  |  pago e devolvido  |
 |  chargeback  |  pago e com chargeback  |
+
+Continua...
