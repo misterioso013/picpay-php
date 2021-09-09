@@ -1,6 +1,6 @@
 <?php
 
-require_once("simple_picpay.php");
+require_once("../simple_picpay.php");
 
 // Chamando a classe
 $picpay = New PicPay();
@@ -16,7 +16,7 @@ $id = rand(100000000,999999999);
 $data = array(
   "referenceId" => $id,
   "callbackUrl" => "http://www.sualoja.com.br/callback",
-  "returnUrl" => "http://localhost/picpay-php/pedido.php?id=$id",
+  "returnUrl" => "http://localhost/picpay-php/tests/pedido-test.php?id=$id",
   "value" => 0.50,
   "expiresAt" => "2022-05-01T16:00:00-03:00",
   "channel" => "my-channel",
