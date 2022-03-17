@@ -4,26 +4,29 @@ Vamos utilizar a API do [PicPay E-commerce](https://ecommerce.picpay.com/) para 
 
 ## Instalação
 
-Vamos incluir o arquivo `simple_picpay.php` no código e criar um objeto:
-```
+Inclua o arquivo `PicPay.php` no código:
+```php
 <?php
 
-require_once("simple_picpay.php");
+require_once("src/PicPay.php");
 
-$picpay = New PicPay();
+use Misterioso013\Payments\PicPay; 
+$picpay = New PicPay(x_picpay_token, x_seller_token);
 ```
+Ou utilize o [composer](https://getcomposer.org/) para facilitar a sua vida:
+```php
+<?php
 
-Use as credencias encontradas no painel do picpay E-commerce em: **Menu > Integrações**
+require __DIR__. "vendor/autoload.php";
+
+use Misterioso013\Payments\PicPay; 
+$picpay = New PicPay(x_picpay_token, x_seller_token);
 ```
-$picpay->x_picpay_token = "credencial_aqui";
-
-$picpay->x_seller_token = "credencial_aqui";
-```
-
+**Atenção:** Lembre-se de substituir `x_picpay_token` e `x_seller_token` pelos seus token encontrados no site do PicPay.
 ## Solicitar Pagamentos
 O cliente decide pagar usando o PicPay e agora é só gerar o pagamento com os dados dele.
 Teste o código:
-```
+```php
 $data = array(
   "referenceId" => 100000000,
   "callbackUrl" => "http://www.sualoja.com.br/callback",
@@ -41,51 +44,6 @@ $data = array(
   ]);
 
   print_r($picpay->Payments($data));
-```
-O código acima retornará um Array em caso de sucesso com os dados para o pagamento, em caso de erro será exibido um Array com detalhes dos erros. Agora, que tal pormos em prática?
-Uso básico:
-
-```
-$id = rand(100000000,999999999);
-$data = array(
-  "referenceId" => $id,
-  "callbackUrl" => "http://www.sualoja.com.br/callback",
-  "returnUrl" => "http://localhost/picpay-php/pedido.php?id=$id",
-  "value" => 0.50,
-  "expiresAt" => "2022-05-01T16:00:00-03:00",
-  "channel" => "my-channel",
-  "purchaseMode" => "in-store",
-  "buyer" =>  [
-    "firstName"=> "João",
-    "lastName"=> "Da Silva",
-    "document"=> "123.456.789-10",
-    "email"=> "teste@picpay.com",
-    "phone" => "+55 27 12345-6789"
-  ]);
-  
-  $payment = $picpay->Payments($data);
-
-  if(isset($payment->error)) {
-
-    // Tratar erros
-    
-  }else{
-    // Tratar dados para realizar o pagamento
-
-    $referenceID = $payment->referenceId;
-    $paymentUrl = $payment->paymentUrl;
-    $contentQR = $payment->qrcode->content;
-    $imageQR = $payment->qrcode->base64;
-    $expiresAt = $payment->expiresAt;
-
-
-    echo '<h1>Finalizar Pagamento</h1>';
-    echo '<p style="text-aligin:center;">Faça o pagamento até '.date("d/m/Y", strtotime($expiresAt)).'| ID do pedido: '.$referenceID;
-
-    echo '<br><img src="'.$imageQR.'" width="200px"/>';
-    echo '<br><a href="'.$paymentUrl.'" target="_blank" style="padding:10px;background:green;color:white;text-decoration:none;">PAGAR AGORA</a></p>';
-  }
-
 ```
 ### Entenda a resposta
 Ao solicitar o pagamento você recebe um Array com os seguintes dados:
@@ -187,17 +145,17 @@ $payment = $picpay->Payments($data);
 
 ## Status
 Consulte o status do seu pedido de forma simples. Use nosso exemplo para melhor compreensão
-> Use o `referenceId` com indetificador do pedido
+> Use o `referenceId` como indetificador do pedido
 
 Exemplo:
-```
+```php
 $request = $picpay->Status($referenceId);
 print_r($request);
 
 ```
 Retorno em caso de sucesso:
 
-```
+```php
 stdClass Object
 (
     [referenceId] => 960361262
@@ -210,25 +168,57 @@ stdClass Object
 
 ```
 Entenda o Array acima:
-| Índice/Chave |  Descrição  |
-| ------------------- | ------------------- |
-|  referenceId |  Irá retornar o ID que você definiu anteriormente  |
-|  status  |  Status atual do pedido  |
-|  createdAt  |  Data da criação do pedido em `ISO 8601`  |
-|  updatedAt  |  Data da última atualização de status do pedido em `ISO 8601`  |
-|  value  |  Preço do pedido  |
-|  authorizationId  |  Número da autorização de pagamento **(caso esteja pago)**  |
+
+| Índice/Chave    | Descrição                                                    |
+|-----------------|--------------------------------------------------------------|
+| referenceId     | Irá retornar o ID que você definiu anteriormente             |
+| status          | Status atual do pedido                                       |
+| createdAt       | Data da criação do pedido em `ISO 8601`                      |
+| updatedAt       | Data da última atualização de status do pedido em `ISO 8601` |
+| value           | Preço do pedido                                              |
+| authorizationId | Número da autorização de pagamento **(caso esteja pago)**    |
 
 Possíveis status:
 
-| Status |  Descrição  |
-| ------------------- | ------------------- |
-|  created  |  registro criado  |
-|  expired  |  prazo para pagamento expirado  |
-|  analysis  |  pago e em processo de análise anti-fraude  |
-|  paid  |  pago  |
-|  completed  |  pago e saldo disponível  |
-|  refunded  |  pago e devolvido  |
-|  chargeback  |  pago e com chargeback  |
+| Status     | Descrição                                 |
+|------------|-------------------------------------------|
+| created    | registro criado                           |
+| expired    | prazo para pagamento expirado             |
+| analysis   | pago e em processo de análise anti-fraude |
+| paid       | pago                                      |
+| completed  | pago e saldo disponível                   |
+| refunded   | pago e devolvido                          |
+| chargeback | pago e com chargeback                     |
 
-Continua...
+## Cancelamento
+Cancele pedidos que ainda não foram pagos ou devolva o dinheiro de pagamentos já concluídos.
+> Use o `referenceId` como indetificador do pedido
+> Use o `authorizationId` para cancelar pedidos que já estão pagos
+
+Exemplo:
+```php
+# o authorizationId só é obrigatório para pedidos que já foram pagos
+$request = $picpay->Cancellations($referenceId, $authorizationId);
+print_r($request);
+
+```
+Retorno em caso de sucesso:
+
+```php
+stdClass Object
+(
+    [referenceId] => 960361262
+    [cancellationId] => 0000b800cf788600237f30f3
+)
+
+```
+Entenda o Array acima:
+
+| Índice/Chave   | Descrição                                          |
+|----------------|----------------------------------------------------|
+| referenceId    | Irá retornar o ID que você definiu anteriormente   |
+| cancellationId | Número de verificação do cancelamento do pagamento |
+
+Não pude testar tudo que é possível acontecer com o uso da API, e a sua última documentação se encontra fora de funcionamento no momento desse commit.
+
+Sinta-se a vontade para fazer um fork e continuar esse projeto, tenho certeza que isso ajudará muita gente.

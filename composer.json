@@ -1,0 +1,28 @@
+{
+  "authors": [
+    {
+      "name": "Rosiel Victor",
+      "email": "ola@devsonhador.com.br",
+      "homepage": "https://helpdevelop.top",
+      "role": "Developer"
+    }
+  ],
+  "description": "Integração simples com a API do PicPay",
+  "homepage": "https://github.com/misterioso013/picpay-php",
+  "keywords": [
+    "picpay",
+    "payments"
+  ],
+  "license": "MIT",
+  "minimum-stability": "stable",
+  "name": "misterioso013/picpay-php",
+  "require": {
+    "php": ">=8.0.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "Misterioso013\\Payments\\": "src/"
+    }
+  },
+  "type": "library"
+}

@@ -1,11 +1,9 @@
 <?php
-require_once("../simple_picpay.php");
+require '../vendor/autoload.php';
+use Misterioso013\Payments\PicPay;
 
-// Chamando a classe
-$picpay = New PicPay();
+$picpay = New PicPay('x_picpay_token_aqui', 'x_seller_token_aqui');
 
-$picpay->x_picpay_token = "cole_aqui";
-$picpay->x_seller_token = "cole_aqui";
 
 $id = filter_input(INPUT_GET,'id');
 
@@ -40,19 +38,15 @@ if(isset($request->error)) {
         case 'analysis':
             $status = "Em analise";
             break;
+        case 'completed':
         case 'paid':
             $status = "Pago";
             break;
-        case 'completed':
-            $status = "Pago";
-            break;
+        case 'chargeback':
         case 'refunded':
             $status = "Devolvido";
             break;
-        case 'chargeback':
-            $status = "Devolvido";
-            break;
-        
+
     }
 
 }
@@ -72,6 +66,6 @@ if(isset($request->error)) {
 </head>
 <body>
     <h1>Detalhes do seu pedido</h1>
-    <p>O seu pedido do N° (<?php echo $referenceId; ?>) no valor de R$<?php echo number_format($value,2,',','.'); ?> está <?php echo $status; ?><br><a href="">Atualizar</a> <br> <a href="test.php" target="_blank">Comprar novamente</a></p>
+    <p>O seu pedido do N° (<?php echo $referenceId; ?>) no valor de R$<?php echo number_format($value,2,',','.'); ?> está <?php echo $status; ?><br><a href="">Atualizar</a> <br> <a href="index.php" target="_blank">Comprar novamente</a><br><a href="cancellations.php?id=<?=$referenceId?>&auth=<?=$authorizationId?>" target="_blank">Cancelar a compra</a></p>
 </body>
 </html>

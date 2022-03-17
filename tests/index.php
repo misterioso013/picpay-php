@@ -1,24 +1,19 @@
 <?php
+require '../vendor/autoload.php';
+use Misterioso013\Payments\PicPay;
 
-require_once("../simple_picpay.php");
 
 // Chamando a classe
-$picpay = New PicPay();
+$picpay = New PicPay('x_picpay_token_aqui', 'x_seller_token_aqui');
 
-/* CREDENCIAIS DE AUTENTICACAO
-Consiga-as em:
-https://painel-empresas.picpay.com/integracoes
- */
-$picpay->x_picpay_token = "cole_aqui";
-$picpay->x_seller_token = "cole_aqui";
 
 $id = rand(100000000,999999999);
 $data = array(
   "referenceId" => $id,
-  "callbackUrl" => "http://www.sualoja.com.br/callback",
-  "returnUrl" => "http://localhost/picpay-php/tests/pedido-test.php?id=$id",
+  "callbackUrl" => "http://localhost/callback.php",
+  "returnUrl" => "http://localhost:8080/tests/pedido-test.php?id=$id",
   "value" => 0.50,
-  "expiresAt" => "2022-05-01T16:00:00-03:00",
+  "expiresAt" => "2025-05-01T16:00:00-03:00",
   "channel" => "my-channel",
   "purchaseMode" => "in-store",
   "buyer" =>  [
@@ -63,5 +58,5 @@ $data = array(
     echo '<p style="text-aligin:center;">Faça o pagamento até '.date("d/m/Y", strtotime($expiresAt)).'| ID do pedido: '.$referenceID;
 
     echo '<br><img src="'.$imageQR.'" width="200px"/>';
-    echo '<br><a href="'.$paymentUrl.'" target="_blank" style="padding:10px;background:green;color:white;text-decoration:none;">PAGAR AGORA</a></p>';
+    echo '<br><a href="'.$paymentUrl.'" target="_blank" style="padding:10px;background:green;color:white;text-decoration:none;">PAGAR AGORA</a><br><br><br><br><a href="cancellations.php?id='.$id.'" target="_blank">Cancelar a compra</a></p>';
   }
