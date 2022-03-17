@@ -13,7 +13,11 @@ require_once("src/PicPay.php");
 use Misterioso013\Payments\PicPay; 
 $picpay = New PicPay(x_picpay_token, x_seller_token);
 ```
-Ou utilize o [composer](https://getcomposer.org/) para facilitar a sua vida:
+Ou utilize o [composer](https://getcomposer.org/) para facilitar a sua vida. Instalação:
+```
+composer require misterioso013/picpay-php
+```
+Exemplo de uso:
 ```php
 <?php
 
